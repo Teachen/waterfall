@@ -1,0 +1,132 @@
+<template>
+<view>
+    <view class="WxShopDetail">
+        <image src="{{detailItem.avatar}}"/>
+        <view class="seller">{{detailItem.name}}</view>
+        <view class="sellerDetail tc fr" data-uid="{{detailItem.uid}}" bindtap="navigateToMiniProgram">商家详情</view> 
+    </view>
+    <view class="WxShopImg">
+        <image class="WxMasonryImage" src="{{detailItem.img}}"  data-src="{{detailItem.img}}" bindtap="previewImage"/> 
+    </view>
+</view>
+</template>
+<script>
+import wepy from "wepy";
+import api from "@/api/api";                                  
+import tip from "@/utils/tip";  
+import formId from "@/components/formid";   
+import {  
+  SYSTEM_INFO,
+  SEL_CLASS_CODE,
+  USER_SPECICAL_INFO,               
+  USER_UID,
+  USER_INFO,
+  TOKEN
+} from '@/utils/constant';  
+export default class Detail extends wepy.page { 
+  config = {  
+    navigationBarBackgroundColor: '#CF4F42',
+    navigationBarTitleText: "",
+    navigationBarTextStyle: "white"
+  }
+  
+  data = {
+    detailItem:{},
+    uid: 1,   
+    token: "", 
+    product_id: 1, 
+    formid: ''   
+  }
+
+  methods = {
+      navigateToMiniProgram(e) { 
+        let navigateUid = e.currentTarget.dataset.uid; 
+        wx.navigateToMiniProgram({
+        appId: 'wx09f6dc683d4ab4d8',
+        path: '/pages/avator?uid='+navigateUid,
+        envVersion: 'trial',
+        success(res) {
+            // 打开成功
+            console.log("打开辅料圈成功"+res)   
+        }
+        })
+      },
+        previewImage(e) {   
+            let current = e.currentTarget.dataset.src;   
+            let imageArry = [];
+            imageArry.push(current)
+            wx.previewImage({
+            current: current, // 当前显示图片的http链接
+            urls: imageArry, // 需要预览的图片http链接列表
+            })
+        }
+  }
+
+  async getnoteInstanceList() { 
+      let that = this;
+      const res = await api.GetDetails({ 
+          query: {  
+              uid: that.uid,
+              id: that.product_id, 
+              token: that.token,
+              formId: that.formid, 
+              method: "GET" 
+          }
+      });
+      if(res.data.code == 200) {  
+          that.detailItem = res.data.data[0];    
+          that.$apply();     
+      }
+
+  }
+
+  onLoad(option) {
+    var that = this;
+    let calore = wepy.getStorageSync(USER_UID);                                                                                               
+    that.token = wepy.getStorageSync(TOKEN);   
+    that.uid =  calore.uid; 
+    if(option != undefined){ 
+        that.product_id = option.id; 
+    }
+        that.getnoteInstanceList();
+  } 
+
+}
+</script>
+<style lang="less">
+    .WxShopDetail{
+        width: 92%;
+        height: 68rpx;
+        line-height: 68rpx;
+        padding: 24rpx 30rpx;
+        background:#fff; 
+        position: fixed;
+        top: 0;
+        image{
+            width: 68rpx;
+            height: 68rpx;
+            border-radius: 12rpx; 
+        }
+        .seller{  
+            display: inline-block;  
+            vertical-align:top;
+            margin-left:29rpx;
+        }
+        .sellerDetail{
+            width:160rpx;
+            height:64rpx;
+            color:#fff;
+            background:#cf4f42;
+            border-radius:2rpx;
+            font-size:28rpx;
+            line-height:64rpx; 
+        }
+    }
+    .WxShopImg{
+        margin-top: 116rpx;
+        image {
+        width:100%;
+        height:1000rpx;  
+        } 
+    }
+</style>

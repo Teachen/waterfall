@@ -1,0 +1,116 @@
+<template>
+    <form bindsubmit="formSubmit" report-submit="true">
+        <button formType="submit" class='btn1' hover-class="none">
+              <view class='aa'>
+                 <form bindsubmit="formSubmit" report-submit="true">
+                       <button formType="submit" class='btn1' hover-class="none">
+                            <view class='aa'>
+                                <form bindsubmit="formSubmit" report-submit="true">
+                                     <button formType="submit" class='btn1' hover-class="none">
+                                          <view class='aa'>
+                                              <form bindsubmit="formSubmit" report-submit="true">
+                                                     <button formType="submit" class='btn1' hover-class="none">
+                                                          <view class='aa'>
+                                                              <form bindsubmit="formSubmit" report-submit="true">
+                                                                     <button formType="submit" class='btn1' hover-class="none">
+                                                                          <view class='aa'>
+                                                                              <form bindsubmit="formSubmit" report-submit="true">
+                                                                                     <button formType="submit" class='btn1' hover-class="none">
+                                                                                        <view class='aa'>
+                                                                                          <form bindsubmit="formSubmit" report-submit="true">
+                                                                                                 <button formType="submit" class='btn1' hover-class="none">
+                                                                                                      <view class='aa'> 
+                                                                                                          <slot></slot>
+                                                                                                      </view>
+                                                                                                </button>
+                                                                                           </form>
+                                                                                        </view>
+                                                                                    </button>
+                                                                               </form>
+                                                                          </view>
+                                                                    </button>
+                                                               </form>
+                                                          </view>
+                                                    </button>
+                                               </form>
+                                          </view>
+                                    </button>
+                               </form>
+                            </view>
+                      </button>
+                 </form>
+              </view>
+        </button>
+    </form>
+</template>
+<script>
+import wepy from 'wepy';
+import api from '@/api/api';    
+import util from '@/utils/util' 
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,           
+  USER_INFO,
+  USER_UID
+} from '@/utils/constant';
+export default class formid extends wepy.component{
+    data = {
+       isF:true
+    };
+    props = {
+      // 父向子单向动态传值
+      UID: {  
+          type: String,
+          default: 1
+      },
+      token: {  
+          type: String,
+          default: 1
+      }
+    };
+    async FormId1(formId) { 
+      let that = this;
+        const json = await api.FormId({   
+          query: {
+            formid: formId,
+            uid:that.UID,   
+            token: that.token,
+            method:"POST"
+          }
+        });
+
+      if (json.data.code == 200) {          
+        // console.log("收集成功");  
+        } else {  
+        // console.log("收集失败"); 
+      }
+    }
+    methods = {
+        formSubmit(e) {
+          let formId = e.detail.formId;   
+          this.FormId1(formId);  
+        } 
+    }
+ 
+}
+</script>   
+<style lang="less">
+  form{
+    position: relative;
+  }
+  .btn1{ 
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        overflow: visible;
+        background:transparent;
+      }
+      button::after{
+        border:none;
+      }
+      .aa{
+        width:100%;
+        
+      }
+</style>
+

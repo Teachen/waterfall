@@ -1,0 +1,212 @@
+<template> 
+<view>
+  <view class="swiper-box"> 
+        <view class="hot-box">
+            <view class="hot-box-main WxMasonryView" >  
+                  <view class="WxMasonry" wx:for="{{datalist}}" wx:if="{{index % 2 != 0 }}" wx:for-item="item" wx:for-index="i" wx:key=""> 
+                  <navigator  url="/pages/detail?id={{item.id}}" hover-class="none"> 
+                      <image class="WxMasonryImage" mode='widthFix' bindload = 'load' data-index = "{{index}}" src="{{item.img}}" /> 
+                      <view class="list-box-title">            
+                        <image src="{{item.avatar}}"/>   
+                        <view class="list-title">{{item.name}}</view>    
+                      </view>
+                  </navigator> 
+                  </view>   
+                  <view class="WxMasonry" wx:for="{{datalist}}" wx:if="{{index % 2 == 0 }}" wx:for-item="item" wx:for-index="i" wx:key=""> 
+                  <navigator  url="/pages/detail?id={{item.id}}" hover-class="none"> 
+                      <image class="WxMasonryImage" mode='widthFix' bindload = 'load' data-index = "{{index}}" src="{{item.img}}"  /> 
+                      <view class="list-box-title">            
+                        <image src="{{item.avatar}}"/>   
+                        <view class="list-title">{{item.name}}</view>                                    
+                      </view>
+                  </navigator> 
+                  </view>  
+            </view> 
+        </view> 
+</view> 
+  <view class="clickChange">
+    <image src="../images/ico-change.png" bindtap="clickchang"/> 
+  </view>
+</view>
+</template> 
+<script>
+import wepy from "wepy";
+import api from "@/api/api";                                  
+import tip from "@/utils/tip";      
+import util from "@/utils/util";      
+import {  
+  SYSTEM_INFO,
+  SEL_CLASS_CODE,
+  USER_SPECICAL_INFO,                 
+  USER_UID,
+  USER_INFO,
+  TOKEN
+} from '@/utils/constant';    
+export default class WaterfallHome extends wepy.page {    
+  data={
+    /**
+     * 页面配置 
+    */ 
+    height: [],  
+    // 精选数据 
+    datalist: [],  
+    // 盒子
+    box: [216,340,604],
+    dataListDateCurrent: 20161106,      // 当前日期current 
+    dataListDateCount: 0,
+    imagesHeightList: [],
+    uid: 1,
+    count: 0
+  } 
+  //事件处理函数 
+  config = {  
+    navigationBarBackgroundColor: '#CF4F42', 
+    enablePullDownRefresh: true,
+    navigationBarTitleText: "纽扣图集",
+    navigationBarTextStyle: "white"
+  }
+
+  //获取信息列表
+  async buttonCondoBox(Num) {
+    console.log("加载成功"+Num)
+      let that = this;  
+      const res = await api.GetList({
+          query: {
+              uid: that.uid, 
+              token: that.token,
+              num: Num,
+              formid: that.formId, 
+              method: "POST"     
+          }
+      });
+      if(res.data.code == 200) {   
+          wepy.stopPullDownRefresh();  
+          that.datalist =  res.data.data.list;   
+          that.$apply();                                                                        
+      } 
+  } 
+ 
+    methods={
+      clickchang(e){ 
+        this.datalist = [];
+        this.buttonCondoBox(6); 
+      }
+    }
+
+    load(e){  // 监听图片加载完 获取图片的高度
+        this.height = [...this.height, e.detail.height]   
+    } 
+   
+    onLoad(option) {
+      console.log("跳到首页"+option.ok)
+      var that = this; 
+      let calore = wepy.getStorageSync(USER_UID);   
+      that.token = wepy.getStorageSync(TOKEN);                                                         
+      that.uid =  calore.uid; 
+      that.buttonCondoBox(0);    
+      if(that.uid == null){        
+          wepy.redirectTo({
+              url: '/pages/authorize'                                                      
+          })
+      }  
+      wx.getSystemInfo({
+        success: function (res) {
+          that.winWidth = res.winWidth;
+          that.winHeight = res.windowHeight;
+        }
+      })
+    } 
+
+  onPullDownRefresh() {
+      this.datalist = [];   
+      this.count++ 
+      console.log(this.count)
+      this.buttonCondoBox(this.count);
+  }
+}
+</script>
+<style lang="less"> 
+  /**index.wxss**/ 
+  page{
+    background-color: #ECECEC;
+  }
+  .clickChange{
+    position: fixed;
+    bottom: 125rpx;
+    right: 39rpx;
+    z-index: 10;
+    image{
+      width: 127rpx;
+      height: 127rpx;
+      border-radius: 50%;
+    }
+  }
+  .swiper-box{ display: block; height: 100%; width: 100%; overflow: hidden; }
+  .hot-box{ display: block; height: 100%; font-family: Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans CN", "PingFang SC", Roboto, "微软雅黑", "Heiti SC", "Microsoft Yahei", sans-serif }
+  .hot-box-main{
+    display:block;
+    overflow:hidden;
+    margin-bottom:40rpx;
+    justify-content:space-between;
+    padding:35rpx; 
+  }
+  .WxMasonryView{
+    column-count:2;
+    column-gap:35rpx;
+    width:90%; 
+  }
+  .WxMasonry{
+    width:100%;
+    border:4rpx solid #fcfcfc;   
+    margin-bottom:18rpx; 
+    transition:opacity 0.4s ease-in-out;
+    border-radius:12rpx; 
+    display:inline-block; 
+    border:1rpx solid transparent; 
+  }
+  .WxMasonryImage {
+    width:100% !important;  
+    border-radius:10rpx;
+    position:relative;
+    z-index:1; 
+    display:inline-block; 
+
+  }
+  .list-box-title {
+    font-size:32rpx;
+    width:100.5%;
+    height:112rpx;
+    align-items:center;
+    background:#fff;
+    display:inline-block;     
+    margin-top:-10rpx;
+    line-height:95rpx;
+    position:relative;
+    padding-top:22rpx;
+    
+    image{
+      width:69rpx;
+      height:69rpx;
+      border-radius:10rpx;
+      margin-right:20rpx;
+      margin-top:-35rpx;
+      line-height:48rpx;
+      position:absolute;
+      top:50%;
+      left:19rpx;
+      margin-top:-35rpx;
+
+    }
+    .list-title{
+      width:63%;
+      height:100%;
+      display:inline-block;
+      margin-left:101rpx;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+
+    }
+  }
+
+</style>

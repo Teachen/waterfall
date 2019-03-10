@@ -1,0 +1,55 @@
+<style lang="less">  
+@import "./styles/style_atlas"; 
+@import "./styles/icon";
+
+</style>
+<script>
+import wepy from 'wepy'; 
+import './utils/sdk/ald-stat';
+import 'wepy-async-function';
+import api from '@/api/api';
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO,
+  USER_UID
+} from '@/utils/constant';
+export default class extends wepy.app { 
+  config = { 
+    pages: [    
+      'pages/waterfallhome',
+      'pages/detail', 
+      'pages/authorize' 
+    ], 
+    window: {
+      backgroundTextStyle: 'dark',
+      navigationBarBackgroundColor: '#FFFFFF', 
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black',      
+      backgroundColor: '#EFEFEF'
+    },
+    navigateToMiniProgramAppIdList: ["wx09f6dc683d4ab4d8"]
+  }
+
+  globalData = { // 全局数据对象
+    tip: 1, 
+    version: "版本 1.01",
+    userInfo:null,
+    openID:'',
+    userID:'', 
+    MathR:0, 
+    userMessage:{}  
+  } 
+  constructor() {
+    super();
+    this.use('requestfix');     
+    this.use('promisify');  
+
+  }
+  async onLaunch() { 
+  }
+  
+
+}
+
+</script>
