@@ -97,8 +97,7 @@ export default class WaterfallHome extends wepy.page {
         this.height = [...this.height, e.detail.height]   
     } 
    
-    onLoad(option) {
-      console.log("跳到首页"+option.ok)
+    onLoad(option) { 
       var that = this; 
       let calore = wepy.getStorageSync(USER_UID);   
       that.token = wepy.getStorageSync(TOKEN);                                                         
@@ -115,6 +114,22 @@ export default class WaterfallHome extends wepy.page {
           that.winHeight = res.windowHeight;
         }
       })
+ 
+      //微信更新版本提醒 
+      const updateManager = wx.getUpdateManager();  
+      updateManager.onUpdateReady(function () { 
+      wx.showModal({
+          title: '更新提示',
+          content: '版本更新，马上体验？',  
+          success(res) {  
+          if (res.confirm) {
+              updateManager.applyUpdate()
+          }else{
+              updateManager.applyUpdate()
+          }
+          } 
+      })
+      })
     } 
 
   onPullDownRefresh() {
@@ -123,6 +138,18 @@ export default class WaterfallHome extends wepy.page {
       console.log(this.count)
       this.buttonCondoBox(this.count);
   }
+
+  //小程序分享
+  onShareAppMessage(res) {    
+    wx.showShareMenu({
+      withShareTicket: true 
+    }) 
+
+    return {
+        title: "辅料助手",  
+        path:'/pages/home' 
+    }
+  }   
 }
 </script>
 <style lang="less"> 
@@ -131,10 +158,10 @@ export default class WaterfallHome extends wepy.page {
     background-color: #ECECEC;
   }
   .clickChange{
-    position: fixed;
-    bottom: 125rpx;
-    right: 39rpx;
-    z-index: 10;
+    position:fixed;
+    bottom:146rpx;
+    right:66rpx;
+    z-index:10; 
     image{
       width: 127rpx;
       height: 127rpx;

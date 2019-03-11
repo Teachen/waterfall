@@ -17,7 +17,7 @@ import {
 export default class extends wepy.app { 
   config = { 
     pages: [    
-      'pages/waterfallhome',
+      'pages/home',
       'pages/detail', 
       'pages/authorize' 
     ], 
@@ -28,7 +28,7 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'black',      
       backgroundColor: '#EFEFEF'
     },
-    navigateToMiniProgramAppIdList: ["wx09f6dc683d4ab4d8"]
+    navigateToMiniProgramAppIdList: ["wx09f6dc683d4ab4d8"] 
   }
 
   globalData = { // 全局数据对象

@@ -90,13 +90,13 @@ export default class Authorize extends wepy.page {
             }
           })                         
           }
-        } 
+        }    
       }
       
     }
   
-  async onGotUserInfo(e) {  
-    if (e.detail.errMsg == 'getUserInfo:ok') { 
+  async onGotUserInfo(e) { 
+    if (e.detail.errMsg == 'getUserInfo:ok') {   
       let res = await wepy.login(); 
       if (res.code) { 
         wepy.setStorageSync(USER_INFO, e.detail.userInfo);  
@@ -142,22 +142,21 @@ export default class Authorize extends wepy.page {
         }
 
         let userUid = wepy.getStorageSync(USER_UID);             
-        if (rlt.data) {
- 
+        if (rlt.data) { 
           let data = rlt.data;                              
-          if (data.data.openid) {  
-
+          if (data.data.openid) {   
             wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
             let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO);   
               wepy.redirectTo({
-                url: '/pages/waterfallhome?ok='+1000000 
+                url: '/pages/home'
               })    
           }
         }  
 
 
       }
-    } 
+    }  
+
   }
 
   methods = { 
